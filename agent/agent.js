@@ -66,15 +66,16 @@ async function runCommand(command, repoFolder) {
         });
     })
 }
-async function sendRunStatus(buildId, status) {
+async function sendRunStatus(buildId, status, buildStart, buildFinish) {
     axios({
         method: 'NOTIFY',
         url: `${SERVER_HOST}:${SERVER__PORT}/notify_build_result`,
         data: {
-            buildId: buildId,
-            status: status,
-            stdout: "stdout",
-            stderr: "stderr"
+            buildId,
+            status,
+            buildStart,
+            buildFinish,
+            logs: "stdout"
         }
     })
 }
@@ -85,11 +86,12 @@ app.post('/build', async (req, res) => {
         res.sendStatus(400).json('buildId, repositoryURL, commitHash, command should be provided');
         return;
     }
-
+    const buildStart = new Date();
     const repoFolder =  await cloneRepo(repositoryURL, commitHash);
     await checkOutCommit(commitHash, repoFolder);
     const runStatus = await runCommand(command, repoFolder);
-    await sendRunStatus(buildId, runStatus);
+    const buildFinish = new Date();
+    await sendRunStatus(buildId, runStatus, buildStart, buildFinish);
     await res.sendStatus(200);
 });
 app.listen(PORT);
