@@ -65,10 +65,9 @@ async function runCommand(command, repoFolder) {
         });
     })
 }
-
 async function sendRunStatus(buildId, status) {
     axios({
-        method: 'POST',
+        method: 'NOTIFY',
         url: `${SERVER_HOST}:${SERVER__PORT}/notify_build_result`,
         data: {
             buildId: buildId,
@@ -96,13 +95,13 @@ app.listen(PORT);
 console.log(`Agent started on PORT ${PORT}`);
 //registerAgentOnServer(os.hostname, PORT);
 
-function registerAgentOnServer(host, port) {
+function registerAgentOnServer(agentHost, agentPort) {
     axios({
-        method: 'CREATE',
+        method: 'NOTIFY',
         url: `${SERVER_HOST}:${SERVER__PORT}/notify_agent`,
         data: {
-            host: host,
-            port: port
+            agentHost,
+            agentPort
         }
     }).then(response => {
         console.log('Registered on SERVER', response)
