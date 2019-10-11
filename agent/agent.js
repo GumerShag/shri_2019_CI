@@ -17,6 +17,20 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+function registerAgentOnServer(agentHost, agentPort) {
+    axios({
+        method: 'NOTIFY',
+        url: `${SERVER_HOST}:${SERVER__PORT}/notify_agent`,
+        data: {
+            agentHost,
+            agentPort
+        }
+    }).then(response => {
+        console.log('Registered on SERVER')
+    }).catch(err => {
+        console.log('ERROR', err)
+    })
+}
 async function cloneRepo(repositoryURL, commitHash) {
     const repoFolder = getFolderName(repositoryURL, commitHash);
     return new Promise((resolve, reject) => {
@@ -83,7 +97,7 @@ async function sendRunStatus(buildId, status, buildStart, buildFinish) {
 app.post('/build', async (req, res) => {
     const { buildId, repositoryURL, commitHash, command } = req.body;
     if (!buildId || !repositoryURL || !commitHash || !command) {
-        res.sendStatus(400).json('buildId, repositoryURL, commitHash, command should be provided');
+        res.sendStatus(400).json('buildId, repositoryURL, commitHash and command should be provided');
         return;
     }
     const buildStart = new Date();
@@ -98,17 +112,4 @@ app.listen(PORT);
 console.log(`Agent started on PORT ${PORT}`);
 registerAgentOnServer(HOST, PORT);
 
-function registerAgentOnServer(agentHost, agentPort) {
-    axios({
-        method: 'NOTIFY',
-        url: `${SERVER_HOST}:${SERVER__PORT}/notify_agent`,
-        data: {
-            agentHost,
-            agentPort
-        }
-    }).then(response => {
-        console.log('Registered on SERVER')
-    }).catch(err => {
-        console.log('ERROR', err)
-    })
-}
+
