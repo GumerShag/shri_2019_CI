@@ -1,6 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const os = require("os");
+const bodyParser = require('body-parser');
 const config = require('./config.agent.json');
 const PORT = config["port"] | 3000;
 const { exec, spawn } = require('child_process');
@@ -9,6 +10,8 @@ const SERVER__PORT = config["server-port"] | 5000;
 const axios = require('axios');
 
 const app = express();
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 async function cloneRepo(repositoryURL, commitHash) {
     const repoFolder = `${commitHash}_build`;
@@ -23,7 +26,6 @@ async function cloneRepo(repositoryURL, commitHash) {
                 return;
             }
             resolve(logs);
-
         });
     })
 }
@@ -55,10 +57,16 @@ async function sendBuildStatus(buildId, status, stdout, stderr) {
     })
 }
 
-app.post('/build', async req=> {
+app.post('/build', async (req, res) => {
     const { buildId, repositoryURL, commitHash, command } = req.body;
+    if (!buildId || !repositoryURL || !commitHash || !command) {
+        res.sendStatus(400);
+        return;
+    }
+
     await cloneRepo(repositoryURL, commitHash);
     await checkOUtCommit(commitHash);
+    await res.sendStatus(200);
     // await runBuild(command);
     // await sendBuildStatus(buildId);
 });
