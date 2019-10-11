@@ -12,13 +12,14 @@ app.use(bodyParser.json());
 
 app.notify('/notify_agent', async (req, res) => {
     const {agentHost, agentPort} = req.body;
-    const agents = await filehandle.readFile('./data/agents.json');
-
+    let agents = await filehandle.readFile('./server/data/agents.json');
+    agents = JSON.parse(agents.toString());
     agents.push({
         agentHost,
         agentPort
     });
-    await filehandle.writeFile('./data/agents.json')
+    await filehandle.writeFile('./server/data/agents.json', JSON.stringify(agents));
+    await res.sendStatus(200);
 });
 
 app.notify('/notify_build_result', async (req, res) => {

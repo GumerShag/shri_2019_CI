@@ -5,6 +5,7 @@ const buffer = require('buffer');
 const bodyParser = require('body-parser');
 const config = require('./config.agent.json');
 const PORT = config["port"] || 3000;
+const HOST = config["host"] || 'http://localhost';
 const SERVER_HOST = config["server-host"] || 'http://localhost';
 const SERVER__PORT = config["server-port"] || 5000;
 const { exec, spawn } = require('child_process');
@@ -93,7 +94,7 @@ app.post('/build', async (req, res) => {
 });
 app.listen(PORT);
 console.log(`Agent started on PORT ${PORT}`);
-//registerAgentOnServer(os.hostname, PORT);
+registerAgentOnServer(HOST, PORT);
 
 function registerAgentOnServer(agentHost, agentPort) {
     axios({
@@ -104,7 +105,7 @@ function registerAgentOnServer(agentHost, agentPort) {
             agentPort
         }
     }).then(response => {
-        console.log('Registered on SERVER', response)
+        console.log('Registered on SERVER')
     }).catch(err => {
         console.log('ERROR', err)
     })

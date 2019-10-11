@@ -1,4 +1,5 @@
 {
+    "host": "http://localhost",
     "port": 3000,
     "server-host": "http://localhost",
     "server-port": 5000
