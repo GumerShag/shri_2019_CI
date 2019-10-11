@@ -15,6 +15,7 @@ app.notify('/notify_agent', async (req, res) => {
     const {agentHost, agentPort} = req.body;
     let agents = await filehandle.readFile(AGENTS_APTH);
     agents = JSON.parse(agents.toString());
+    //TODO: add validation for unique agent
     agents.push({
         agentHost,
         agentPort
@@ -24,10 +25,11 @@ app.notify('/notify_agent', async (req, res) => {
 });
 
 app.notify('/notify_build_result', async (req, res) => {
-    const { buildId, status, logs } = req.body;
+    const { buildId, status, buildStart, buildFinish, logs } = req.body;
     try {
         await filehandle.mkdir(`./server/data/build-${buildId}-${status}`);
         await filehandle.writeFile(`./server/data/build-${buildId}-${status}/.logs`, logs);
+        await filehandle.writeFile(`./server/data/build-${buildId}-${status}/timing.json`, JSON.stringify({buildStart, buildFinish}));
     } catch (e) {
         res.send(500);
     }
