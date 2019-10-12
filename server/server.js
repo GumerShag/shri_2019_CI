@@ -32,7 +32,7 @@ app.notify('/notify_build_result', async (req, res) => {
     try {
         await filehandle.mkdir(`./server/data/builds/build-${buildId}-${status}`, {recursive: true});
         await filehandle.writeFile(`./server/data/builds/build-${buildId}-${status}/.logs`, logs);
-        await filehandle.writeFile(`./server/data/builds/build-${buildId}-${status}/timing.json`, JSON.stringify({buildStart, buildFinish}));
+        await filehandle.writeFile(`./server/data/builds/build-${buildId}-${status}/timing.json`, JSON.stringify({buildStart, buildFinish, commitHash, buildId}));
     } catch (e) {
         res.send(500);
     }
