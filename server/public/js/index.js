@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     loadBuilds();
     //TODO: Websocket is to implemented here
-   // const interval = setInterval(loadBuilds, 20000);
+    const interval = setInterval(loadBuilds, 20000);
     
 });
 

@@ -65,19 +65,14 @@ async function runCommand(command, repoFolder) {
             logs: '',
             status: ''
         };
-        const buildLogs = spawn(commandParts[0], commandParts.slice(1, commandParts.lenght), {cwd: `${BUILDS_BASE_PATH}${repoFolder}`});
+        const buildLogs = spawn(/^win/.test(process.platform) ? `${commandParts[0]}.cmd`: commandParts[0], commandParts.slice(1, commandParts.lenght), {cwd: `${BUILDS_BASE_PATH}${repoFolder}`});
         buildLogs.stdout.on('data', logs => {
             logs = Buffer.from(logs).toString();
-            //console.log(logs);
             currentStatus.logs = currentStatus.logs.concat(logs);
-           // resolve(logs);
         });
 
-        buildLogs.stderr.on('data', errors => {
-            errors = Buffer.from(errors).toString();
-           // console.log(errors);
+        buildLogs.on('error', errors => {
             currentStatus.logs = currentStatus.logs.concat(errors);
-            reject(errors);
         });
 
         buildLogs.on('close', exitStatus => {
@@ -113,6 +108,7 @@ app.post('/build', async (req, res) => {
     }
     try {
         console.log("AGENT BUILD STARTED");
+        res.sendStatus(200);
         buildStart = new Date(Date.now()).toLocaleString();
         const repoFolder = await cloneRepo(repositoryURL, commitHash);
         await checkOutCommit(commitHash, repoFolder);
@@ -122,9 +118,9 @@ app.post('/build', async (req, res) => {
         console.log("AGENT BUILD FINISHED");
     } catch (e) {
         buildFinish = new Date(Date.now()).toLocaleString();
-        await sendRunStatus(buildId, {status: 'FAILED', logs: e}, buildStart, buildFinish, commitHash);
+        await sendRunStatus(buildId, {status: 'FAILED', logs: e.toString()}, buildStart, buildFinish, commitHash);
     }
-    await res.sendStatus(200);
+
 
 });
 app.listen(PORT);
