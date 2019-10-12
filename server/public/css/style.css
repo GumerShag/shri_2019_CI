@@ -1,0 +1,34 @@
+* {
+    font-family: sans-serif
+}
+.form {
+    display: flex;
+    flex-direction: column;
+}
+.head {
+    padding: 32px 62px;
+}
+.body {
+    padding: 8px 62px;
+}
+
+.label-command, .label-commit-hash {
+    margin-bottom: 4px;
+}
+
+input {
+    height: 32px;
+    margin-bottom: 8px;
+}
+
+.submit-button {
+    width: 256px;
+    background: #28a745;
+    border-radius: 4px;
+    background: linear-gradient(-180deg,#34d058,#28a745 90%);
+    border: 0;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1em;
+}

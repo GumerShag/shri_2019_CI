@@ -70,26 +70,28 @@ async function runCommand(command, repoFolder) {
 
         buildLogs.stderr.on('data', errors => {
             errors = Buffer.from(errors).toString();
-            console.log(errors);
+           // console.log(errors);
             reject(errors);
         });
 
         buildLogs.on('close', exitLogs => {
-            console.log(exitLogs);
+            //console.log(exitLogs);
             resolve(exitLogs)
         });
     })
 }
-async function sendRunStatus(buildId, status, buildStart, buildFinish) {
+async function sendRunStatus(buildId, status, buildStart, buildFinish, commitHash) {
     axios({
         method: 'NOTIFY',
         url: `${SERVER_HOST}:${SERVER__PORT}/notify_build_result`,
         data: {
             buildId,
-            status: "PASSED",
+            status: Math.floor((Math.random() * 100) + 1) %2 === 0 ? "PASSED" : "FAILED",
             buildStart,
             buildFinish,
-            logs: "stdout"
+            logs: "stdout",
+            agentPort: PORT,
+            commitHash
         }
     })
 }
@@ -100,12 +102,14 @@ app.post('/build', async (req, res) => {
         res.sendStatus(400).json('buildId, repositoryURL, commitHash and command should be provided');
         return;
     }
+    console.log("AGENT BUILD STARTED");
     const buildStart = new Date();
     const repoFolder =  await cloneRepo(repositoryURL, commitHash);
     await checkOutCommit(commitHash, repoFolder);
     const runStatus = await runCommand(command, repoFolder);
     const buildFinish = new Date();
-    await sendRunStatus(buildId, runStatus, buildStart, buildFinish);
+    await sendRunStatus(buildId, runStatus, buildStart, buildFinish, commitHash);
+    console.log("AGENT BUILD FINISHED");
     await res.sendStatus(200);
 });
 app.listen(PORT);

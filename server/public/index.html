@@ -2,13 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!--<script src="./js/index.js"></script>-->
+    <script src="./js/index.js"></script>
     <link rel="stylesheet" href="css/style.css">
     <title>CI</title>
 </head>
 <body>
     <div id="root">
-        <h1>Hell</h1>
+        <div class="head">
+            <form class="form" id="submit-form">
+                <label class="label-commit-hash"> Commit hash</label>
+                <input type="text" id="commitHash" placeholder="d68d40813cca337d4e0481ac1cdb89024df48890">
+                <label class="label-command"> Command</label>
+                <input type="text" id="command" placeholder="npm run tests">
+                <input type="submit" class="submit-button" value="Запустить сборку">
+            </form>
+        </div>
+        <div class="body">
+            <table class="data-table data-table_col-5">
+                <thead class="data-table__head">
+                <tr class="data-table-row">
+                    <th class="data-table-row__cell-header">
+                        <span class="text text_color-ghost text_size-m">Commit Hash</span>
+                    </th>
+                    <th class="data-table-row__cell-header">
+                        <span class="text text_color-ghost text_size-m">Status</span>
+                    </th>
+                </tr>
+                </thead>
+                <tbody class="data-table__body">
+
+                </tbody>
+            </table>
+        </div>
     </div>
 </body>
 </html>
