@@ -9,6 +9,7 @@ const AGENTS_PATH = './server/data/agents.json';
 
 const app = express();
 app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -60,8 +61,18 @@ app.get('/builds', async (req, res) => {
     await res.json(buildsArray);
 
 });
-app.get('/build/:buildId', (req, res) => {
-   //TODO: Implement UI
+app.get('/build-info', async (req, res) => {
+    const { id } = req.query;
+    const buildsPath = './server/data/builds/';
+    const builds = await filehandle.readdir(buildsPath);
+    for (const build of builds) {
+        let buildInfo = await filehandle.readFile(`${buildsPath}/${build}/info.json`);
+        buildInfo = JSON.parse(buildInfo.toString());
+        if (buildInfo.buildId === id) {
+            await res.json(buildInfo);
+        }
+    }
+
 });
 
 async function startBuildOnAgent (commitHash, command) {

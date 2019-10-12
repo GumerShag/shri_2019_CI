@@ -109,11 +109,11 @@ app.post('/build', async (req, res) => {
         return;
     }
     console.log("AGENT BUILD STARTED");
-    const buildStart = new Date();
+    const buildStart = new Date(Date.now()).toLocaleString();
     const repoFolder =  await cloneRepo(repositoryURL, commitHash);
     await checkOutCommit(commitHash, repoFolder);
     const runStatus = await runCommand(command, repoFolder);
-    const buildFinish = new Date();
+    const buildFinish = new Date(Date.now()).toLocaleString();;
     await sendRunStatus(buildId, runStatus, buildStart, buildFinish, commitHash);
     console.log("AGENT BUILD FINISHED");
     await res.sendStatus(200);

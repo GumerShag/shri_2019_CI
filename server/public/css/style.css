@@ -8,6 +8,10 @@
 .head {
     padding: 32px 62px;
 }
+
+h2 {
+    padding: 16px 62px;
+}
 .body {
     padding: 8px 62px;
 }
@@ -40,3 +44,55 @@ input::placeholder {
 .submit-button:hover {
     transform: scale(1.01);
  }
+
+.data-table {
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 1fr repeat(2, .5fr);
+    grid-row-gap: 8px;
+}
+
+.data-table__head {
+    display: contents;
+    text-overflow: ellipsis;
+    text-align: left;
+    white-space: nowrap;
+    padding: 16px 0;
+}
+.data-table__body {
+    display: contents;
+}
+
+.data-table-row,.data-table-row__cell {
+    display: contents;
+    border-bottom: 1px solid #e1e2e3;
+}
+
+.data-table-row__cell-header {
+    display: contents;
+    padding: 16px 0;
+}
+
+.label-commit {
+    color: #1a3dc1;
+}
+.status-passed {
+    background-color: #28a745;
+    padding: 8px;
+    border-radius: 4px;
+    color: white;
+}
+.status-failed {
+    background-color: #ff6262;
+    padding: 8px;
+    border-radius: 4px;
+    color: white;
+}
+textarea {
+    width: 100%;
+    height: 256px;
+}
+
+.dates {
+    padding: 16px 0;
+}

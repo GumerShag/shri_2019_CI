@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     loadBuilds();
     //TODO: Websocket is to implemented here
-    setInterval(loadBuilds, 5000);
+   // const interval = setInterval(loadBuilds, 20000);
     
 });
 
@@ -42,6 +42,7 @@ function loadBuilds() {
         renderTableItems(response);
         }
     ).catch(err => {
+        clearInterval(loadBuilds);
         console.log(err)
     })
 }
@@ -50,7 +51,7 @@ function renderTableItems(items) {
     const tableBody = document.getElementById('table-body');
     tableBody.innerHTML = items.map(item => {
         return `<tr class="data-table-row">
-                    <td class="data-table-row__cell data-table-row__cell-updated"><span class="text text_color-primary">${item.commitHash}</span></td>
+                    <td class="data-table-row__cell data-table-row__cell-updated"><a href="/build/?id=${item.buildId}" class="text text_color-primary">${item.commitHash}</a></td>
                     <td class="data-table-row__cell data-table-row__cell-updated"><span class="text text_color-primary">${item.status}</span></td>
                     <td class="data-table-row__cell data-table-row__cell-updated"><span class="text text_color-primary">${item.buildFinish}</span></td>
                 </tr>`
