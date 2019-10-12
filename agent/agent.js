@@ -28,7 +28,8 @@ function registerAgentOnServer(agentHost, agentPort) {
     }).then(response => {
         console.log('Registered on SERVER')
     }).catch(err => {
-        console.log('ERROR', err)
+        console.log('Error during registration on Server\n', err.message);
+        process.exit(1);
     })
 }
 async function cloneRepo(repositoryURL, commitHash) {
@@ -85,7 +86,7 @@ async function runCommand(command, repoFolder) {
 async function sendRunStatus(buildId, runStatus, buildStart, buildFinish, commitHash) {
     axios({
         method: 'NOTIFY',
-        url: `${SERVER_HOST}:${SERVER__PORT}/notify_build_result`,
+        url: `${SERVER_HOST}:${SERVER__PORT}/n2otify_build_result`,
         data: {
             buildId,
             status: runStatus.status,

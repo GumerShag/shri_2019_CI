@@ -49,10 +49,6 @@ app.post('/start_build', async (req, res) => {
     });
 });
 
-app.get('/', (req, res) => {
-    //TODO:Implement UI
-
-});
 app.get('/builds', async (req, res) => {
     const buildsPath = './server/data/builds/';
     const builds = await filehandle.readdir(buildsPath);
