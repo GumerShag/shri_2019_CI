@@ -18,17 +18,25 @@
 
 input {
     height: 32px;
+    border-width: 0 0 .1em 0;
     margin-bottom: 8px;
+    border-color: #ff6262c7;
+}
+input::placeholder {
+    color: #e1e2e3;
 }
 
 .submit-button {
     width: 256px;
-    background: #28a745;
     border-radius: 4px;
-    background: linear-gradient(-180deg,#34d058,#28a745 90%);
+    background: linear-gradient(-180deg,#34d058,#28a745);
     border: 0;
     color: #fff;
     cursor: pointer;
     font-weight: 600;
     font-size: 1em;
+
 }
+.submit-button:hover {
+    transform: scale(1.01);
+ }

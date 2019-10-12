@@ -89,7 +89,13 @@ async function sendRunStatus(buildId, status, buildStart, buildFinish, commitHas
             status: Math.floor((Math.random() * 100) + 1) %2 === 0 ? "PASSED" : "FAILED",
             buildStart,
             buildFinish,
-            logs: "stdout",
+            logs: "Merge: f97fcec 9e96201\n" +
+                "Author: David Rivera <jherax@gmail.com>\n" +
+                "Date:   Wed Sep 19 08:50:47 2018 -0600\n" +
+                "\n" +
+                "    Merge pull request #8 from SebastianPuchet/master\n" +
+                "    \n" +
+                "    Fix for Angular production build\n",
             agentPort: PORT,
             commitHash
         }

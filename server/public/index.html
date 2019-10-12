@@ -15,6 +15,7 @@
                 <label class="label-command"> Command</label>
                 <input type="text" id="command" placeholder="npm run tests">
                 <input type="submit" class="submit-button" value="Запустить сборку">
+                <span id="build-info"></span>
             </form>
         </div>
         <div class="body">
@@ -27,9 +28,12 @@
                     <th class="data-table-row__cell-header">
                         <span class="text text_color-ghost text_size-m">Status</span>
                     </th>
+                    <th class="data-table-row__cell-header">
+                        <span class="text text_color-ghost text_size-m">Date</span>
+                    </th>
                 </tr>
                 </thead>
-                <tbody class="data-table__body">
+                <tbody class="data-table__body" id="table-body">
 
                 </tbody>
             </table>

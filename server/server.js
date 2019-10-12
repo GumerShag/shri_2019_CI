@@ -31,8 +31,7 @@ app.notify('/notify_build_result', async (req, res) => {
     await changeAgentStatus(agentPort);
     try {
         await filehandle.mkdir(`./server/data/builds/build-${buildId}-${status}`, {recursive: true});
-        await filehandle.writeFile(`./server/data/builds/build-${buildId}-${status}/.logs`, logs);
-        await filehandle.writeFile(`./server/data/builds/build-${buildId}-${status}/timing.json`, JSON.stringify({buildStart, buildFinish, commitHash, buildId}));
+        await filehandle.writeFile(`./server/data/builds/build-${buildId}-${status}/info.json`, JSON.stringify({buildStart, buildFinish, commitHash, buildId, status, logs: logs.toString()}));
     } catch (e) {
         res.send(500);
     }
@@ -50,7 +49,17 @@ app.get('/', (req, res) => {
     //TODO:Implement UI
 
 });
+app.get('/builds', async (req, res) => {
+    const buildsPath = './server/data/builds/';
+    const builds = await filehandle.readdir(buildsPath);
+    let buildsArray = [];
+    for (const build of builds) {
+        let buildInfo = await filehandle.readFile(`${buildsPath}/${build}/info.json`);
+        buildsArray.push(JSON.parse(buildInfo.toString()));
+    }
+    await res.json(buildsArray);
 
+});
 app.get('/build/:buildId', (req, res) => {
    //TODO: Implement UI
 });
