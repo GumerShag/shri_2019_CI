@@ -10,3 +10,5 @@
  умолчанию запускается на http://localhost:5000
 * `npm rub start:agent` запуск и регистрация агента. Конфигурации лежат в [config.agent.json](/agent/config.agent.json) по
 умолчанию запускается на http://localhost:3000
+
+![img](./assets/UI.png)
