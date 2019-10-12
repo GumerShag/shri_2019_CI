@@ -61,41 +61,42 @@ async function checkOutCommit(commitHash, repoFolder) {
 async function runCommand(command, repoFolder) {
     return new Promise((resolve, reject) => {
         const commandParts = command.split(' ');
+        let currentStatus = {
+            logs: '',
+            status: ''
+        };
         const buildLogs = spawn(commandParts[0], commandParts.slice(1, commandParts.lenght), {cwd: `${BUILDS_BASE_PATH}${repoFolder}`});
         buildLogs.stdout.on('data', logs => {
             logs = Buffer.from(logs).toString();
-            console.log(logs);
-            resolve(logs);
+            //console.log(logs);
+            currentStatus.logs = currentStatus.logs.concat(logs);
+           // resolve(logs);
         });
 
         buildLogs.stderr.on('data', errors => {
             errors = Buffer.from(errors).toString();
            // console.log(errors);
+            currentStatus.logs = currentStatus.logs.concat(errors);
             reject(errors);
         });
 
-        buildLogs.on('close', exitLogs => {
-            //console.log(exitLogs);
-            resolve(exitLogs)
+        buildLogs.on('close', exitStatus => {
+            console.log("EXIT STATUS", exitStatus);
+            currentStatus.status = exitStatus === 0 ? 'PASSED' : 'FAILED';
+            resolve(currentStatus)
         });
     })
 }
-async function sendRunStatus(buildId, status, buildStart, buildFinish, commitHash) {
+async function sendRunStatus(buildId, runStatus, buildStart, buildFinish, commitHash) {
     axios({
         method: 'NOTIFY',
         url: `${SERVER_HOST}:${SERVER__PORT}/notify_build_result`,
         data: {
             buildId,
-            status: Math.floor((Math.random() * 100) + 1) %2 === 0 ? "PASSED" : "FAILED",
+            status: runStatus.status,
             buildStart,
             buildFinish,
-            logs: "Merge: f97fcec 9e96201\n" +
-                "Author: David Rivera <jherax@gmail.com>\n" +
-                "Date:   Wed Sep 19 08:50:47 2018 -0600\n" +
-                "\n" +
-                "    Merge pull request #8 from SebastianPuchet/master\n" +
-                "    \n" +
-                "    Fix for Angular production build\n",
+            logs: runStatus.logs,
             agentPort: PORT,
             commitHash
         }
@@ -104,19 +105,27 @@ async function sendRunStatus(buildId, status, buildStart, buildFinish, commitHas
 
 app.post('/build', async (req, res) => {
     const { buildId, repositoryURL, commitHash, command } = req.body;
+    let buildStart;
+    let buildFinish;
     if (!buildId || !repositoryURL || !commitHash || !command) {
         res.sendStatus(400).json('buildId, repositoryURL, commitHash and command should be provided');
         return;
     }
-    console.log("AGENT BUILD STARTED");
-    const buildStart = new Date(Date.now()).toLocaleString();
-    const repoFolder =  await cloneRepo(repositoryURL, commitHash);
-    await checkOutCommit(commitHash, repoFolder);
-    const runStatus = await runCommand(command, repoFolder);
-    const buildFinish = new Date(Date.now()).toLocaleString();;
-    await sendRunStatus(buildId, runStatus, buildStart, buildFinish, commitHash);
-    console.log("AGENT BUILD FINISHED");
+    try {
+        console.log("AGENT BUILD STARTED");
+        buildStart = new Date(Date.now()).toLocaleString();
+        const repoFolder = await cloneRepo(repositoryURL, commitHash);
+        await checkOutCommit(commitHash, repoFolder);
+        const runStatus = await runCommand(command, repoFolder);
+        buildFinish = new Date(Date.now()).toLocaleString();
+        await sendRunStatus(buildId, runStatus, buildStart, buildFinish, commitHash);
+        console.log("AGENT BUILD FINISHED");
+    } catch (e) {
+        buildFinish = new Date(Date.now()).toLocaleString();
+        await sendRunStatus(buildId, {status: 'FAILED', logs: e}, buildStart, buildFinish, commitHash);
+    }
     await res.sendStatus(200);
+
 });
 app.listen(PORT);
 console.log(`Agent started on PORT ${PORT}`);

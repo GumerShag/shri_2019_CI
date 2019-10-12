@@ -11,7 +11,7 @@ const app = express();
 app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '50mb'}));
 
 app.notify('/notify_agent', async (req, res) => {
     const {agentHost, agentPort} = req.body;
@@ -42,8 +42,11 @@ app.notify('/notify_build_result', async (req, res) => {
 app.post('/start_build', async (req, res) => {
     const { commitHash, command } = req.body;
     console.log('### START BUILD\nHASH:', commitHash, '\nCOMMAND: ',command);
-    await startBuildOnAgent(commitHash, command);
-    await res.sendStatus(201);
+    startBuildOnAgent(commitHash, command).then(resolve => {
+        res.sendStatus(201);
+    }).catch(err => {
+        res.status(500).send(err);
+    });
 });
 
 app.get('/', (req, res) => {
@@ -84,7 +87,7 @@ async function startBuildOnAgent (commitHash, command) {
 
     if (freeAgentIndex === -1){
         console.log("NO FREE AGENTS");
-        return;
+        throw Error("NO FREE AGENTS");
     }
 
     const freeAgent = agents[freeAgentIndex];
@@ -101,10 +104,6 @@ async function startBuildOnAgent (commitHash, command) {
             commitHash,
             command
         }
-    }).then(resolve => {
-       // console.log(resolve)
-    }).catch(err => {
-       // console.log(err)
     })
 }
 async function changeAgentStatus(agentPort) {

@@ -78,15 +78,19 @@ input::placeholder {
 }
 .status-passed {
     background-color: #28a745;
-    padding: 8px;
+    padding: 4px 8px;
     border-radius: 4px;
     color: white;
+    width: 64px;
+    text-align: center;
 }
 .status-failed {
     background-color: #ff6262;
-    padding: 8px;
+    padding: 4px 8px;
     border-radius: 4px;
     color: white;
+    width: 64px;
+    text-align: center;
 }
 textarea {
     width: 100%;

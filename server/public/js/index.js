@@ -17,9 +17,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 command
             })
         }).then(respone => {
-            buildInfo.innerText = respone.status === 201 ? 'Успех' : 'Неудачно'
+            buildInfo.innerText = respone.status === 201 ? 'Сборка запущена' : 'Ошибка сервера'
         }).catch(err => {
-            buildInfo.innerText = 'Неудачно'
+            buildInfo.innerText = 'Ошибка сервера'
         })
     });
 
@@ -52,7 +52,7 @@ function renderTableItems(items) {
     tableBody.innerHTML = items.map(item => {
         return `<tr class="data-table-row">
                     <td class="data-table-row__cell data-table-row__cell-updated"><a href="/build/?id=${item.buildId}" class="text text_color-primary">${item.commitHash}</a></td>
-                    <td class="data-table-row__cell data-table-row__cell-updated"><span class="text text_color-primary">${item.status}</span></td>
+                    <td class="data-table-row__cell data-table-row__cell-updated"><span class="text text_color-primary status-${item.status.toLowerCase()}">${item.status}</span></td>
                     <td class="data-table-row__cell data-table-row__cell-updated"><span class="text text_color-primary">${item.buildFinish}</span></td>
                 </tr>`
     }).join('');
