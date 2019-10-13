@@ -5,7 +5,9 @@
   "main": ".prettier.config.js",
   "scripts": {
     "start:agent": "node ./agent/agent.js",
-    "start:server": "node ./server/server.js"
+    "start:server": "node ./server/server.js",
+    "fix:agent": "prettier --config ./.prettier.config.js --write ./agent/**/*.js",
+    "fix:server": "prettier --config ./.prettier.config.js --write ./server/**/*.js"
   },
   "repository": {
     "type": "git",
@@ -24,6 +26,7 @@
     "express": "^4.17.1"
   },
   "devDependencies": {
-    "os": "^0.1.1"
+    "os": "^0.1.1",
+    "prettier": "^1.18.2"
   }
 }
