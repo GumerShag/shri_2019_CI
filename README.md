@@ -11,4 +11,6 @@
 * `npm rub start:agent` запуск и регистрация агента. Конфигурации лежат в [config.agent.json](/agent/config.agent.json) по
 умолчанию запускается на http://localhost:3000
 
+Node JS version > 10.0.0
+
 ![img](./assets/UI.png)

@@ -60,6 +60,7 @@ app.get('/builds', async (req, res) => {
     await res.json(buildsArray);
 
 });
+
 app.get('/build-info', async (req, res) => {
     const { id } = req.query;
     const buildsPath = './server/data/builds/';
@@ -73,6 +74,10 @@ app.get('/build-info', async (req, res) => {
     }
 
 });
+
+filehandle.writeFile(AGENTS_PATH, JSON.stringify([]));
+app.listen(PORT);
+console.log(`Server started on PORT ${PORT}`);
 
 async function startBuildOnAgent (commitHash, command) {
     let agents = await filehandle.readFile(AGENTS_PATH);
@@ -113,6 +118,3 @@ async function changeAgentStatus(agentPort) {
     }
     await filehandle.writeFile(AGENTS_PATH, JSON.stringify(agents));
 }
-filehandle.writeFile(AGENTS_PATH, JSON.stringify([]));
-app.listen(PORT);
-console.log(`Server started on PORT ${PORT}`);
