@@ -1,4 +1,4 @@
-console.log('Works');
+const UPDATE_TIMEOUT = 5;
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('submit-form');
     form.addEventListener('submit', event => {
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     loadBuilds();
     //TODO: Websocket is to implemented here
-    const interval = setInterval(loadBuilds, 20000);
+    const interval = setInterval(loadBuilds, UPDATE_TIMEOUT * 1000);
 });
 
 function loadBuilds() {
