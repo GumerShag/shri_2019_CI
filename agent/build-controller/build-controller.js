@@ -90,11 +90,9 @@ async function runCommand(command, repoFolder) {
             status: ''
         };
         const buildLogs = spawn(
-            /^win/.test(process.platform)
-                ? `${commandParts[0]}.cmd`
-                : commandParts[0],
+            commandParts[0],
             commandParts.slice(1, commandParts.lenght),
-            { cwd: `${BUILDS_BASE_PATH}${repoFolder}` }
+            { cwd: `${BUILDS_BASE_PATH}${repoFolder}`, shell: true }
         );
         buildLogs.stdout.on('data', logs => {
             logs = Buffer.from(logs).toString();
