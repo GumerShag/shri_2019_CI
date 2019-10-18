@@ -26,13 +26,28 @@ const buildController = async (req, res) => {
         await checkOutCommit(commitHash, repoFolder);
         const runStatus = await runCommand(command, repoFolder);
         buildFinish = new Date(Date.now()).toLocaleString();
-        await sendRunStatus(
+        let isSendStatusSuccess = await sendRunStatus(
             buildId,
             runStatus,
             buildStart,
             buildFinish,
             commitHash
         );
+        let notifyServerInterval = setInterval(async () => {
+            if (!isSendStatusSuccess) {
+                isSendStatusSuccess = await sendRunStatus(
+                    buildId,
+                    runStatus,
+                    buildStart,
+                    buildFinish,
+                    commitHash
+                );
+            }
+        }, 5000);
+
+        if (isSendStatusSuccess) {
+            clearInterval(notifyServerInterval)
+        }
         console.log('AGENT BUILD FINISHED');
     } catch (e) {
         buildFinish = new Date(Date.now()).toLocaleString();
@@ -118,7 +133,7 @@ async function sendRunStatus(
     buildFinish,
     commitHash
 ) {
-    axios({
+    return axios({
         method: 'NOTIFY',
         url: `${SERVER_HOST}:${SERVER__PORT}/notify_build_result`,
         data: {
@@ -130,7 +145,7 @@ async function sendRunStatus(
             agentPort: PORT,
             commitHash
         }
-    });
+    }).then(() => true).catch(() => false);
 }
 
 module.exports = buildController;
